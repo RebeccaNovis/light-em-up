@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,8 @@ public class LaserTarget : MonoBehaviour
         onLaserHit.Invoke(hitPoint, hitNormal);
         newColor = laserColor;
         newGlowColor = glowColor;
+        Debug.Log("color: " + newColor);
+        Debug.Log("glow color: " + newGlowColor);
     }
 
     public void ChangeColor()
@@ -24,6 +27,7 @@ public class LaserTarget : MonoBehaviour
         {
             oldColor = renderer.material.color;
             renderer.material.color = newColor;
+            
         }
     }
 

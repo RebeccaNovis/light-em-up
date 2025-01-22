@@ -1,4 +1,5 @@
-// created with https://www.youtube.com/watch?v=6bFCQqabfzo
+// created with https://www.youtube.com/watch?v=6bFCQqabfzo and chatGPT
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class PickupController : MonoBehaviour
     private Rigidbody heldObjRB;
 
     [SerializeField] private float pickupRange = 5.0f;
-    [SerializeField] private float pickupForce = 150.0f;
+    [SerializeField] private float pickupForce = 100.0f;
 
     private void Update()
     {
@@ -41,8 +42,9 @@ public class PickupController : MonoBehaviour
         {
             heldObjRB = pickedObj.GetComponent<Rigidbody>();
             heldObjRB.useGravity = false;
-            heldObjRB.drag = 10;
-            heldObjRB.constraints = RigidbodyConstraints.FreezeRotation;
+            heldObjRB.isKinematic = true;
+            //heldObjRB.drag = 10;
+            //heldObjRB.constraints = RigidbodyConstraints.FreezeRotation;
 
             heldObjRB.transform.parent = holdArea;
             heldObj = pickedObj;
@@ -53,8 +55,9 @@ public class PickupController : MonoBehaviour
     void DropObject()
     {
         heldObjRB.useGravity = true;
-        heldObjRB.drag = 1;
-        heldObjRB.constraints = RigidbodyConstraints.None;
+        heldObjRB.isKinematic = false;
+       // heldObjRB.drag = 1;
+        //heldObjRB.constraints = RigidbodyConstraints.None;
 
         heldObjRB.transform.parent = null;
         heldObj = null;
@@ -62,10 +65,8 @@ public class PickupController : MonoBehaviour
 
     void MoveObject()
     {
-        if (Vector3.Distance(heldObj.transform.position, holdArea.position) > 0.1f)
-        {
-            Vector3 moveDirection = (holdArea.position - heldObj.transform.position);
-            heldObjRB.AddForce(moveDirection * pickupForce);
-        }
+        // Align the object's position and rotation with the hold area
+        heldObjRB.position = holdArea.position;
+        heldObjRB.rotation = holdArea.rotation;
     }
 }
