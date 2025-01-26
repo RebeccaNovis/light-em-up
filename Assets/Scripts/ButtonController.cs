@@ -6,8 +6,8 @@ using UnityEngine.Events;
 
 public class ButtonController : MonoBehaviour
 {
-    public UnityEvent onButtonUp;
     public UnityEvent onButtonDown;
+    public UnityEvent onButtonUp;
     private Color buttonColor;
     [SerializeField] private GameObject button;
     [SerializeField] private Transform downPosition;

@@ -4,31 +4,31 @@ using UnityEngine;
 
 public class DoorController : MonoBehaviour
 {
-    [SerializeField] private LaserTarget laserTarget;
     [SerializeField] private GameObject openPosition;
     [SerializeField] private GameObject closedPosition;
+    private bool isPoweredOn = false; 
     private float doorSpeed = 1f; // Speed of the poweredObject's movement
 
     // Update is called once per frame
     void Update()
     {
-        if (laserTarget != null && laserTarget.isPoweredOn)
+        if (isPoweredOn)
         {
-            OpenDoor();
+            gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, openPosition.transform.position, Time.deltaTime * doorSpeed);
         }
         else
         {
-            CloseDoor();
+            gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, closedPosition.transform.position, Time.deltaTime * doorSpeed);
         }
     }
 
-    void OpenDoor()
+    public void OpenDoor()
     {
-        gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, openPosition.transform.position, Time.deltaTime * doorSpeed);
+       isPoweredOn = true;
     }
 
-    void CloseDoor()
+    public void CloseDoor()
     {
-        gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, closedPosition.transform.position, Time.deltaTime * doorSpeed);
+        isPoweredOn = false;
     }
 }

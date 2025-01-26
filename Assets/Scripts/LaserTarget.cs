@@ -9,8 +9,10 @@ public class LaserTarget : MonoBehaviour
 {
     public UnityEvent<Vector3, Vector3> onLaserHit;
     public UnityEvent onLaserStop;
+    public UnityEvent onPoweredOn;
+    public UnityEvent onPoweredOff;
 
-    private float hitCooldown = 1f;  // Time to wait before considering the object no longer hit
+    private float hitCooldown = .02f;  // Time to wait before considering the object no longer hit
     private Dictionary<LaserMirror, float> activeLasers = new Dictionary<LaserMirror, float>(); // Track lasers hitting this object
     private HashSet<Color> activeLaserColors = new HashSet<Color>(); // Set to track all laser colors hitting the target
     private Color[] acceptableColors = new Color[]{
@@ -32,7 +34,6 @@ public class LaserTarget : MonoBehaviour
     [SerializeField] private GameObject closedPosition;
 
     private bool isHit = false; // Tracks if the raycast is hitting this object
-    public bool isPoweredOn = false; // Tracks the powered state of the object
 
     private void Start()
     {
@@ -199,15 +200,13 @@ public class LaserTarget : MonoBehaviour
 
         if (renderer.material.color == combinedColor)
         {
-            isPoweredOn = true;
-            //poweredObject.transform.position = Vector3.Lerp(poweredObject.transform.position, openPosition.transform.position, Time.deltaTime * poweredObjectSpeed);
+            onPoweredOn.Invoke();
         }
 
     }
 
     public void PowerOff()
     {
-        isPoweredOn = false;
-        //poweredObject.transform.position = Vector3.Lerp(poweredObject.transform.position, closedPosition.transform.position, Time.deltaTime * poweredObjectSpeed);
+        onPoweredOff.Invoke();
     }
 }
