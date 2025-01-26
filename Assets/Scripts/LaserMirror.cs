@@ -38,7 +38,7 @@ public class LaserMirror : MonoBehaviour
                 LaserTarget target = hit.transform.GetComponent<LaserTarget>();
                 if (target != null)
                 {
-                    target.RegisterHit(hit.point, hit.normal, laserColor, glowColor);
+                    target.RegisterHit(hit.point, hit.normal, laserColor, glowColor, this);
                 }
 
                 // Check if we hit a "mirror"
