@@ -44,25 +44,15 @@ public class LaserTarget : MonoBehaviour
     {
         List<LaserMirror> lasersToRemove = new List<LaserMirror>();
         List<Color> colorsToRemove = new List<Color>(); // List to track colors to remove
-        foreach (var laser in activeLasers)
-        {
-            Debug.Log("!!activeLasers.Count " + activeLasers.Count);
-            Debug.Log("!!Laser: " + laser.Key + ", Timer: " + laser.Value);
-        }
 
         // Update timers for active lasers
         foreach (var laser in new List<LaserMirror>(activeLasers.Keys)) // Creating a snapshot to avoid modifying the collection directly
         {
-            Debug.Log("start of foreach lasersToRemove: " + lasersToRemove);
-
             activeLasers[laser] += Time.deltaTime;
-            Debug.Log("active lasers list: " + activeLasers);
-            Debug.Log("before checking cooldown active lasers: " + activeLasers[laser]);
 
             // Add lasers and colors to be removed if they have timed out
             if (activeLasers[laser] >= hitCooldown)
             {
-                Debug.Log("after checking cooldown active lasers: " + activeLasers[laser]);
                 lasersToRemove.Add(laser);
 
                 // Assuming each laser has a color associated with it, add the corresponding color to be removed
@@ -75,16 +65,12 @@ public class LaserTarget : MonoBehaviour
             }
         }
 
-        Debug.Log("before removing lasersToRemove: " + lasersToRemove);
         // Remove lasers and colors after the iteration is complete
         foreach (var laser in lasersToRemove)
         {
-            Debug.Log("!!inside lasersToRemove: " + lasersToRemove);
             activeLasers.Remove(laser);
-            Debug.Log("!!inside after lasersToRemove: " + lasersToRemove);
         }
 
-        Debug.Log("after lasersToRemove: " + lasersToRemove);
         foreach (var color in colorsToRemove)
         {
             activeLaserColors.Remove(color);
@@ -93,7 +79,6 @@ public class LaserTarget : MonoBehaviour
         // Combine colors or perform logic based on active colors
         CombineLaserColors();
 
-        Debug.Log("!! later activeLasers.Count " + activeLasers.Count);
         if (activeLasers.Count == 0)
         {
             OnLaserStop();
@@ -104,7 +89,6 @@ public class LaserTarget : MonoBehaviour
     {
         if (!activeLasers.ContainsKey(laser))
         {
-            Debug.Log("laser it hitting object. adding it...");
             activeLasers.Add(laser, 0f); // Add the laser to the list and reset its timer
         }
         else
@@ -118,35 +102,10 @@ public class LaserTarget : MonoBehaviour
 
         onLaserHit.Invoke(hitPoint, hitNormal);
     }
-    /*public void RegisterHit(Vector3 hitPoint, Vector3 hitNormal, Color laserColor, Color glowColor)
-    {
-        onLaserHit.Invoke(hitPoint, hitNormal);
-        newColor = laserColor;
-        newGlowColor = glowColor;
-
-        isHit = true;
-        //timeSinceLastHit = 0f;
-    }
-
-    private void Update()
-    {
-        // If the object was hit, increment the time since last hit
-        if (isHit)
-        {
-            timeSinceLastHit += Time.deltaTime;
-
-            // If the timer exceeds the cooldown, the object is no longer being hit
-            if (timeSinceLastHit >= hitCooldown)
-            {
-                isHit = false;
-                OnLaserStop();
-            }
-        }
-    }*/
 
     private void OnLaserStop()
     {
-        Debug.Log("Laser is no longer hitting the target.");
+        //Debug.Log("Laser is no longer hitting the target.");
         isHit = false;
         onLaserStop?.Invoke();
     }
@@ -173,57 +132,25 @@ public class LaserTarget : MonoBehaviour
 
     }
 
-    public void SetColor()
-    {
-        LineRenderer hitLaserLR = gameObject.GetComponent<LineRenderer>();
-        if (isHit)
-        {
-
-            if (hitLaserLR != null)
-            {
-                // Ensure the material is unique to this instance
-                hitLaserLR.material = new Material(hitLaserLR.material);
-
-                hitLaserLR.material.SetColor("_Color", combinedColor);
-                // Update the emission color
-                if (hitLaserLR.material.HasProperty("_EmissionColor"))
-                {
-                    hitLaserLR.material.EnableKeyword("_EMISSION");
-                    hitLaserLR.material.SetColor("_EmissionColor", combinedColor);
-                }
-
-                Debug.Log(gameObject.name + " was hit by other lasers and colors were mixed and updated! new color: " + combinedColor);
-            }
-
-        }
-        else if (!isHit)
-        {
-
-        }
-
-    }
-
     public void ChangeColor()
     {
-        Debug.Log("Changing color!!");
         Renderer renderer = GetComponent<Renderer>();
         if (isHit)
         {
             if (renderer != null)
             {
                 //check that the color is actually a laser color
-                /*for (int i = 0; i < acceptableColors.Length; i++)
+                for (int i = 0; i < acceptableColors.Length; i++)
                 {
                     if (combinedColor == acceptableColors[i])
-                    {*/
+                    {
                         renderer.material.color = combinedColor;
-                        Debug.Log("combinedColor: " + combinedColor);
-                    /*}
+                    }
                     else
                     {
                         //Debug.Log(gameObject.name + " object was hit by a laser but the color was not acceptable");
                     }
-                }*/
+                }
             }
         }
 
@@ -251,7 +178,7 @@ public class LaserTarget : MonoBehaviour
                         
                     }
 
-                    Debug.Log(gameObject.name + " was hit by another laser and emission color was updated! new color: " + combinedColor);
+                    //Debug.Log(gameObject.name + " was hit by another laser and emission color was updated! new color: " + combinedColor);
                 }
                 else
                 {
@@ -280,7 +207,6 @@ public class LaserTarget : MonoBehaviour
 
     public void PowerOff()
     {
-        Debug.Log("closing...");
         isPoweredOn = false;
         //poweredObject.transform.position = Vector3.Lerp(poweredObject.transform.position, closedPosition.transform.position, Time.deltaTime * poweredObjectSpeed);
     }
