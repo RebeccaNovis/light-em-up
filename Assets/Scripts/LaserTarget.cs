@@ -12,7 +12,7 @@ public class LaserTarget : MonoBehaviour
     public UnityEvent onPoweredOn;
     public UnityEvent onPoweredOff;
 
-    private float hitCooldown = .02f;  // Time to wait before considering the object no longer hit
+    private float hitCooldown = .2f;  // Time to wait before considering the object no longer hit
     private Dictionary<LaserMirror, float> activeLasers = new Dictionary<LaserMirror, float>(); // Track lasers hitting this object
     private HashSet<Color> activeLaserColors = new HashSet<Color>(); // Set to track all laser colors hitting the target
     private Color[] acceptableColors = new Color[]{
@@ -24,8 +24,6 @@ public class LaserTarget : MonoBehaviour
             new Color(1, 0, 1), //magenta
             new Color(0, 1, 1) //cyan
     };
-    /*private Color newColor;
-    private Color newGlowColor;*/
     private Color oldColor;
     private Color combinedColor = Color.black;
 
@@ -106,7 +104,7 @@ public class LaserTarget : MonoBehaviour
 
     private void OnLaserStop()
     {
-        //Debug.Log("Laser is no longer hitting the target.");
+        if (!isHit) return; // Avoid unnecessary calls
         isHit = false;
         onLaserStop?.Invoke();
     }
@@ -116,8 +114,8 @@ public class LaserTarget : MonoBehaviour
         // If there are no lasers, return early
         if (activeLaserColors.Count == 0) return;
 
-        // Start with black and combine all laser colors
-        combinedColor = Color.black;
+        // Start with object's color and combine all laser colors
+        combinedColor = oldColor;
 
         // Combine all laser colors
         foreach (Color laserColor in activeLaserColors)
@@ -155,6 +153,16 @@ public class LaserTarget : MonoBehaviour
             }
         }
 
+
+    }
+
+    public void ReturnColor(){
+        StartCoroutine(DelayedUpdateColor(6f,  oldColor));
+    }
+    private IEnumerator DelayedUpdateColor(float delay, Color newColor){
+        Renderer renderer = GetComponent<Renderer>();
+        yield return new WaitForSeconds(delay);
+        renderer.material.color = newColor;
     }
 
     public void ChangeLaserColor()
