@@ -6,7 +6,7 @@ public class DoorController : MonoBehaviour
 {
     [SerializeField] private GameObject openPosition;
     [SerializeField] private GameObject closedPosition;
-    private bool isPoweredOn = false; 
+    private bool isPoweredOn = false;
     private float doorSpeed = 1f; // Speed of the poweredObject's movement
 
     // Update is called once per frame
@@ -24,11 +24,19 @@ public class DoorController : MonoBehaviour
 
     public void OpenDoor()
     {
-       isPoweredOn = true;
+        if (!isPoweredOn)
+        {
+            isPoweredOn = true;
+        }
+
     }
 
     public void CloseDoor()
     {
-        isPoweredOn = false;
+        if (isPoweredOn)
+        {
+            isPoweredOn = false;
+        }
+
     }
 }

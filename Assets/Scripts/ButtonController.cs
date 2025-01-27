@@ -42,6 +42,7 @@ public class ButtonController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        CheckCollisionColor(collision);
         if (!isCheckingCollision)
         {
             StartCoroutine(CheckCollisionContinuously(collision));
@@ -74,17 +75,14 @@ public class ButtonController : MonoBehaviour
 
         if (otherObjRenderer != null)
         {
-            Color objColor = otherObjRenderer.material.color;
+            Color objColor = otherObjRenderer.sharedMaterial.color;
 
             if (objColor == buttonColor)
             {
-                if (!isPressed)
-                {
-                    isPressed = true;
-                    onButtonDown.Invoke();
-                }
+                isPressed = true;
+                onButtonDown.Invoke();
             }
-            else
+            else if (objColor != buttonColor)
             {
                 if (isPressed)
                 {
