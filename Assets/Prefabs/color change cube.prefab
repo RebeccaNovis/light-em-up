@@ -182,6 +182,4 @@ MonoBehaviour:
   onPoweredOff:
     m_PersistentCalls:
       m_Calls: []
-  poweredObject: {fileID: 0}
-  openPosition: {fileID: 0}
-  closedPosition: {fileID: 0}
+  timeTillColorRevert: 10

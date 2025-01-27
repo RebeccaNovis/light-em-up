@@ -25,11 +25,10 @@ public class LaserTarget : MonoBehaviour
             new Color(0, 1, 1) //cyan
     };
     private Color oldColor;
+    Color oldLaserColor;
     private Color combinedColor = Color.black;
 
-    [SerializeField] private GameObject poweredObject;
-    [SerializeField] private GameObject openPosition;
-    [SerializeField] private GameObject closedPosition;
+    private float timeTillColorRevert = 100f;
 
     private bool isHit = false; // Tracks if the raycast is hitting this object
 
@@ -37,6 +36,9 @@ public class LaserTarget : MonoBehaviour
     {
         Renderer renderer = GetComponent<Renderer>();
         oldColor = renderer.material.color;
+        if(gameObject.GetComponent<LineRenderer>()){
+            oldLaserColor = gameObject.GetComponent<LineRenderer>().material.color;
+        }
     }
 
     private void Update()
@@ -115,7 +117,12 @@ public class LaserTarget : MonoBehaviour
         if (activeLaserColors.Count == 0) return;
 
         // Start with object's color and combine all laser colors
-        combinedColor = oldColor;
+        if(gameObject.GetComponent<LineRenderer>()){
+            combinedColor = oldLaserColor;
+        } else{
+            combinedColor = oldColor;
+        }
+        
 
         // Combine all laser colors
         foreach (Color laserColor in activeLaserColors)
@@ -157,7 +164,7 @@ public class LaserTarget : MonoBehaviour
     }
 
     public void ReturnColor(){
-        StartCoroutine(DelayedUpdateColor(6f,  oldColor));
+        StartCoroutine(DelayedUpdateColor(timeTillColorRevert,  oldColor));
     }
     private IEnumerator DelayedUpdateColor(float delay, Color newColor){
         Renderer renderer = GetComponent<Renderer>();
