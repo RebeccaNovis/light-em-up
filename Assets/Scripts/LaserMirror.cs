@@ -69,8 +69,9 @@ public class LaserMirror : MonoBehaviour
                 }
 
                 // Check if we hit a "mirror"
-                if (hit.transform.CompareTag("Mirror"))
+                if (hit.collider.CompareTag("Mirror"))
                 {
+                    Debug.Log("hit object: " + hit.collider.gameObject.name);
                     if (heldObj != null && heldObj.name == hit.collider.gameObject.name)
                     {
                         lr.positionCount++;
