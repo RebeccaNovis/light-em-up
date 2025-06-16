@@ -7,11 +7,13 @@ using UnityEngine;
 public class PickupController : MonoBehaviour
 {
     [SerializeField] Transform holdArea;
-    private GameObject heldObj;
+    public GameObject heldObj;
     private Rigidbody heldObjRB;
 
     [SerializeField] private float pickupRange = 5.0f;
     [SerializeField] private float pickupForce = 100.0f;
+
+    [SerializeField] private float rotationSpeed = 100.0f;
 
     private void Update()
     {
@@ -33,6 +35,13 @@ public class PickupController : MonoBehaviour
         if (heldObj != null)
         {
             MoveObject();
+
+            // Call rotation if there's scroll input
+            if (Mathf.Abs(Input.mouseScrollDelta.y) > 0f)
+            {
+                Debug.Log("scroll input: " + Input.mouseScrollDelta.y);
+                RotateObject();
+            }
         }
     }
 
@@ -48,7 +57,7 @@ public class PickupController : MonoBehaviour
 
             heldObjRB.transform.parent = holdArea;
             heldObj = pickedObj;
-
+            Debug.Log("1 heldObj.name: " + heldObj.name);
         }
     }
 
@@ -56,7 +65,7 @@ public class PickupController : MonoBehaviour
     {
         heldObjRB.useGravity = true;
         heldObjRB.isKinematic = false;
-       // heldObjRB.drag = 1;
+        // heldObjRB.drag = 1;
         //heldObjRB.constraints = RigidbodyConstraints.None;
 
         heldObjRB.transform.parent = null;
@@ -68,5 +77,11 @@ public class PickupController : MonoBehaviour
         // Align the object's position and rotation with the hold area
         heldObjRB.position = holdArea.position;
         heldObjRB.rotation = holdArea.rotation;
+    }
+
+    void RotateObject()
+    {
+        float rotationAmount = Input.mouseScrollDelta.y * rotationSpeed;
+        heldObj.transform.Rotate(0f, rotationAmount, 0f, Space.Self);
     }
 }

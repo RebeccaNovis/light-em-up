@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +10,16 @@ public class LaserMirror : MonoBehaviour
     [SerializeField] private int maxBounces = 5; // Maximum number of reflections
     [SerializeField] private float maxDistance = 100f; // Maximum laser distance
 
+    private GameObject heldObj;
+
+    public PickupController pickupController;
+
     void Start()
     {
         lr = GetComponent<LineRenderer>();
+
+        pickupController = GameObject.Find("FirstPersonCamera").GetComponent<PickupController>();
+
     }
 
     void Update()
@@ -22,6 +30,25 @@ public class LaserMirror : MonoBehaviour
         Vector3 currentPosition = startPoint.position;
         Vector3 currentDirection = transform.forward;
         int bounces = 0;
+
+        if (pickupController != null)
+        {
+            if (pickupController.heldObj != null)
+            {
+                heldObj = pickupController.heldObj;
+                Debug.Log("2 heldObj.name: " + heldObj.name);
+            }
+            else
+            {
+                heldObj = null;
+            }
+
+        }
+        else
+        {
+            heldObj = null;
+        }
+
 
         while (bounces < maxBounces)
         {
@@ -44,10 +71,20 @@ public class LaserMirror : MonoBehaviour
                 // Check if we hit a "mirror"
                 if (hit.transform.CompareTag("Mirror"))
                 {
-                    // Reflect the direction and continue the loop
-                    currentPosition = hit.point;
-                    currentDirection = Vector3.Reflect(currentDirection, hit.normal);
-                    bounces++;
+                    if (heldObj != null && heldObj.name == hit.collider.gameObject.name)
+                    {
+                        lr.positionCount++;
+                        lr.SetPosition(lr.positionCount - 1, currentPosition + currentDirection * maxDistance);
+                        break;
+                    }
+                    else
+                    {
+                        // Reflect the direction and continue the loop
+                        currentPosition = hit.point;
+                        currentDirection = Vector3.Reflect(currentDirection, hit.normal);
+                        bounces++;
+                    }
+
                 }
                 else
                 {
