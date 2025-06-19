@@ -72,8 +72,10 @@ public class LaserMirror : MonoBehaviour
                 if (hit.collider.CompareTag("Mirror"))
                 {
                     Debug.Log("hit object: " + hit.collider.gameObject.name);
-                    if (heldObj != null && heldObj.name == hit.collider.gameObject.name)
+                    if (heldObj != null && (heldObj == hit.transform.gameObject || hit.collider.transform.parent == heldObj.transform))
                     {
+                        Debug.Log("hit.transform.gameObject.name: " + hit.transform.gameObject.name);
+                        Debug.Log("heldObj: " + heldObj);
                         lr.positionCount++;
                         lr.SetPosition(lr.positionCount - 1, currentPosition + currentDirection * maxDistance);
                         break;

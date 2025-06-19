@@ -20,6 +20,7 @@ public class LaserTarget : MonoBehaviour
             Color.green,
             Color.blue,
             Color.red,
+            Color.white,
             new Color(1, 1, 0), //yellow 
             new Color(1, 0, 1), //magenta
             new Color(0, 1, 1) //cyan
@@ -36,7 +37,8 @@ public class LaserTarget : MonoBehaviour
     {
         Renderer renderer = GetComponent<Renderer>();
         oldColor = renderer.material.color;
-        if(gameObject.GetComponent<LineRenderer>()){
+        if (gameObject.GetComponent<LineRenderer>())
+        {
             oldLaserColor = gameObject.GetComponent<LineRenderer>().material.color;
         }
     }
@@ -86,6 +88,7 @@ public class LaserTarget : MonoBehaviour
         }
 
     }
+    
     public void RegisterHit(Vector3 hitPoint, Vector3 hitNormal, Color laserColor, Color glowColor, LaserMirror laser)
     {
         if (!activeLasers.ContainsKey(laser))
@@ -191,6 +194,41 @@ public class LaserTarget : MonoBehaviour
                     {
                         hitLaserLR.material.EnableKeyword("_EMISSION");
                         hitLaserLR.material.SetColor("_EmissionColor", combinedColor * 2);
+                        
+                    }
+
+                    //Debug.Log(gameObject.name + " was hit by another laser and emission color was updated! new color: " + combinedColor);
+                }
+                else
+                {
+                    //Debug.Log(gameObject.name +  " was hit by another laser but the color was not acceptable! bad color: " + newColor);
+                }
+
+            }
+
+        }
+
+    }
+
+    public void ResetLaserColor()
+    {
+        LineRenderer hitLaserLR = gameObject.GetComponent<LineRenderer>();
+        if (hitLaserLR != null)
+        {
+            //check that the color is actually a laser color
+            for (int i = 0; i < acceptableColors.Length; i++)
+            {
+                if (oldLaserColor == acceptableColors[i])
+                {
+                    // Ensure the material is unique to this instance
+                    hitLaserLR.material = new Material(hitLaserLR.material);
+
+                    hitLaserLR.material.SetColor("_Color", oldLaserColor);
+                    // Update the emission color
+                    if (hitLaserLR.material.HasProperty("_EmissionColor"))
+                    {
+                        hitLaserLR.material.EnableKeyword("_EMISSION");
+                        hitLaserLR.material.SetColor("_EmissionColor", oldLaserColor * 2);
                         
                     }
 
